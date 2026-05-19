@@ -1,0 +1,7 @@
+1,Iphone,1500,12,phone
+2,BMW,12000,2,car
+3,Samsung S25 Ultra,1300,15,phone
+4,Iphone 15 Pro,12000,75,phone
+5,Macbook M5 Pro,2200,3,notebook
+6,Airpods 4,50,42,phone
+7,Asus ROG Strix,2500,6,notebook
