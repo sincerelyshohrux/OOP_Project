@@ -1,2 +1,6 @@
 admin,admin123,admin
 admin_1,1,customer
+
+
+user,1,customer
+user2,2,customer
