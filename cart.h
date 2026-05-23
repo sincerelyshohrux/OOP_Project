@@ -5,20 +5,20 @@
 #include "product.h"
 using namespace std;
 
-// CartItem class (Lecture 1, 2)
+// CartItem class 
 class CartItem {
 private:
     Product product;
     int quantity;
 
 public:
-    // Constructor
+// Constructor
     CartItem(Product p, int q) {
         product  = p;
         quantity = q;
     }
 
-    // Getters
+// Getters
     Product getProduct()  { return product; }
     int     getQuantity() { return quantity; }
     void    addQuantity(int q) { quantity += q; }

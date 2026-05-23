@@ -28,15 +28,17 @@ int main() {
             registerUser();
         }
         else if (choice == 2) {
-            // loginUser returns Customer* or Admin* (Lecture 6, 7)
+
+            // login User returns Customer or Admin
+
             User* user = loginUser();
 
             if (user == nullptr) continue;
 
-            // Polymorphism - calls correct showMenu() (Lecture 7)
+            // Polymorphism calls correct show Menu
             user->showMenu();
 
-            // Free memory (Lecture 2)
+            // Free memory 
             delete user;
         }
         else {

@@ -40,7 +40,7 @@ void registerUser() {
     cout << "Registration successful!\n";
 }
 
-// Login - returns Customer or Admin object (Lecture 6, 7)
+// Login - returns Customer or Admin object
 User* loginUser() {
     string username, password;
     cout << "\n=== LOGIN ===\n";
@@ -62,7 +62,7 @@ User* loginUser() {
         if (u == username && p == password) {
             cout << "Welcome, " << username << "!\n";
 
-            // Return correct object based on role (Lecture 6)
+            // Return correct object based on role 
             if (r == "admin") return new Admin(u, p);
             else              return new Customer(u, p);
         }
@@ -72,7 +72,7 @@ User* loginUser() {
     return nullptr;
 }
 
-// Customer menu (Lecture 7 - polymorphism)
+// Customer menu 
 void Customer::showMenu() {
     vector<CartItem> cart;
     int choice;
@@ -115,7 +115,7 @@ void Customer::showMenu() {
     }
 }
 
-// Admin menu (Lecture 7 - polymorphism)
+// Admin menu 
 void Admin::showMenu() {
     int choice;
     while (true) {

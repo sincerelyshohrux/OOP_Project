@@ -5,7 +5,7 @@
 #include <iomanip>
 using namespace std;
 
-// Operator << overloading - print product (Lecture 4)
+// Operator overloading  print product 
 ostream& operator<<(ostream& os, Product& p) {
     os << "  [" << p.id << "] " << p.name
        << " | $" << fixed << setprecision(2) << p.price
@@ -28,7 +28,7 @@ vector<Product> loadProducts() {
         getline(ss, qty, ',');
         getline(ss, cat, ',');
 
-        // Exception handling when reading file (Lecture 11)
+        // Exception handling when reading file
         try {
             products.push_back(Product(stoi(id), name, stod(price), stoi(qty), cat));
         } catch (exception& e) {
@@ -38,7 +38,7 @@ vector<Product> loadProducts() {
     return products;
 }
 
-// Show products by category using operator<< (Lecture 4)
+// Show products by category using operator
 void showByCategory(string category) {
     vector<Product> products = loadProducts();
     cout << "\n--- " << category << " catalog ---\n";
@@ -46,7 +46,7 @@ void showByCategory(string category) {
     for (Product p : products) {
         if (p.getCategory() == category) {
             found = true;
-            cout << p << "\n";   // uses operator<< (Lecture 4)
+            cout << p << "\n";   // uses operator
         }
     }
     if (!found) cout << "  No products found!\n";

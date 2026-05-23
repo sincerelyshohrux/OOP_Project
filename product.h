@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-// Product class (Lecture 1, 2)
+// Product class 
 class Product {
 private:
     int id;
@@ -15,7 +15,7 @@ private:
     string category;
 
 public:
-    // Constructor (Lecture 2)
+    // Constructor
     Product(int i = 0, string n = "", double p = 0, int q = 0, string c = "") {
         id       = i;
         name     = n;
@@ -35,7 +35,7 @@ public:
     void setPrice(double p)    { price = p; }
     void setQuantity(int q)    { quantity = q; }
 
-    // Operator << overloading (Lecture 4)
+    // Operator << overloading
     friend ostream& operator<<(ostream& os, Product& p);
 };
 

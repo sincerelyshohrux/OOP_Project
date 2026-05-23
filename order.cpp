@@ -41,7 +41,7 @@ void updateStock(vector<CartItem>& cart) {
     file.close();
 }
 
-// Checkout with exception handling (Lecture 11)
+// Checkout with exception handling
 void checkout(vector<CartItem>& cart, string username) {
     if (cart.empty()) { cout << "\nCart is empty!\n"; return; }
 
@@ -91,7 +91,7 @@ void checkout(vector<CartItem>& cart, string username) {
         cout << "\nOrder saved! Cart cleared.\n";
 
     } catch (exception& e) {
-        // Exception handling (Lecture 11)
+        // Exception handling
         cout << "Checkout error: " << e.what() << "\n";
     }
 }
