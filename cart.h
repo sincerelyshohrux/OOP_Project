@@ -1,15 +1,29 @@
+// Muminov Suxrobbek, U2510138
+
 #pragma once
 #include <vector>
 #include "product.h"
 using namespace std;
 
-// one item in the cart
-struct CartItem {
+// CartItem class (Lecture 1, 2)
+class CartItem {
+private:
     Product product;
-    int quantity;  // how many the customer wants
+    int quantity;
+
+public:
+    // Constructor
+    CartItem(Product p, int q) {
+        product  = p;
+        quantity = q;
+    }
+
+    // Getters
+    Product getProduct()  { return product; }
+    int     getQuantity() { return quantity; }
+    void    addQuantity(int q) { quantity += q; }
 };
 
-// function declarations
 void addToCart(vector<CartItem>& cart);
 void showCart(vector<CartItem>& cart);
 void removeFromCart(vector<CartItem>& cart);

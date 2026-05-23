@@ -1,39 +1,39 @@
+// Muminov Suxrobbek, U2510138
+
 #include "cart.h"
 #include <iostream>
 #include <iomanip>
 using namespace std;
 
-// add a product to the cart
+// Add product to cart
 void addToCart(vector<CartItem>& cart) {
     int id, qty;
     cout << "Enter product ID: ";
     cin >> id;
 
-    // find the product
     Product p = getProductById(id);
-    if (p.id == -1) { cout << "Product not found!\n"; return; }
+    if (p.getId() == -1) { cout << "Product not found!\n"; return; }
 
-    cout << "How many? (available: " << p.quantity << "): ";
+    cout << "How many? (available: " << p.getQuantity() << "): ";
     cin >> qty;
 
-    // check if there is enough stock
-    if (qty > p.quantity) { cout << "Not enough stock!\n"; return; }
+    if (qty > p.getQuantity()) { cout << "Not enough stock!\n"; return; }
 
-    // if product already in cart just increase quantity
+    // If product already in cart, just increase quantity
     for (CartItem& item : cart) {
-        if (item.product.id == id) {
-            item.quantity += qty;
-            cout << p.name << " added to cart!\n";
+        if (item.getProduct().getId() == id) {
+            item.addQuantity(qty);
+            cout << p.getName() << " added to cart!\n";
             return;
         }
     }
-    
-    // otherwise add as new item
-    cart.push_back({p, qty});
-    cout << p.name << " added to cart!\n";
+
+    // Otherwise add as new item
+    cart.push_back(CartItem(p, qty));
+    cout << p.getName() << " added to cart!\n";
 }
 
-// show all items in cart with total price
+// Show all cart items
 void showCart(vector<CartItem>& cart) {
     if (cart.empty()) { cout << "\nCart is empty!\n"; return; }
 
@@ -43,29 +43,30 @@ void showCart(vector<CartItem>& cart) {
     cout << string(50, '-') << "\n";
 
     for (CartItem& item : cart) {
-        double sub = item.product.price * item.quantity;
-        cout << left << setw(5)  << item.product.id
-                     << setw(20) << item.product.name
-                     << setw(10) << item.product.price
-                     << setw(6)  << item.quantity
-                     << sub << "\n";
+        double sub = item.getProduct().getPrice() * item.getQuantity();
+        cout << left
+             << setw(5)  << item.getProduct().getId()
+             << setw(20) << item.getProduct().getName()
+             << setw(10) << item.getProduct().getPrice()
+             << setw(6)  << item.getQuantity()
+             << sub << "\n";
     }
     cout << string(50, '-') << "\n";
     cout << "TOTAL: $" << fixed << setprecision(2) << getTotal(cart) << "\n";
 }
 
-// remove one product from cart by id
+// Remove item from cart
 void removeFromCart(vector<CartItem>& cart) {
     showCart(cart);
     if (cart.empty()) return;
-    
+
     int id;
     cout << "Enter product ID to remove: ";
     cin >> id;
-    
+
     for (int i = 0; i < (int)cart.size(); i++) {
-        if (cart[i].product.id == id) {
-            cout << cart[i].product.name << " removed!\n";
+        if (cart[i].getProduct().getId() == id) {
+            cout << cart[i].getProduct().getName() << " removed!\n";
             cart.erase(cart.begin() + i);
             return;
         }
@@ -73,10 +74,10 @@ void removeFromCart(vector<CartItem>& cart) {
     cout << "Product not found in cart!\n";
 }
 
-// calculate total price of all items in cart
+// Calculate total price
 double getTotal(vector<CartItem>& cart) {
     double total = 0;
     for (CartItem& item : cart)
-        total += item.product.price * item.quantity;
+        total += item.getProduct().getPrice() * item.getQuantity();
     return total;
 }

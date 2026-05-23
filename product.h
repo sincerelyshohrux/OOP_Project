@@ -1,18 +1,44 @@
+// Maxamatjonov Shohruxbek, U2510135
 #pragma once
 #include <string>
 #include <vector>
+#include <iostream>
 using namespace std;
 
-// product data structure
-struct Product {
+// Product class (Lecture 1, 2)
+class Product {
+private:
     int id;
     string name;
     double price;
     int quantity;
-    string category;  // "phone", "notebook", "car"
+    string category;
+
+public:
+    // Constructor (Lecture 2)
+    Product(int i = 0, string n = "", double p = 0, int q = 0, string c = "") {
+        id       = i;
+        name     = n;
+        price    = p;
+        quantity = q;
+        category = c;
+    }
+
+    // Getters
+    int    getId()       { return id; }
+    string getName()     { return name; }
+    double getPrice()    { return price; }
+    int    getQuantity() { return quantity; }
+    string getCategory() { return category; }
+
+    // Setters
+    void setPrice(double p)    { price = p; }
+    void setQuantity(int q)    { quantity = q; }
+
+    // Operator << overloading (Lecture 4)
+    friend ostream& operator<<(ostream& os, Product& p);
 };
 
-// function declarations
 void addProduct();
 void showAllProducts();
 void showByCategory(string category);

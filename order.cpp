@@ -1,3 +1,5 @@
+// Saydinabiyev Saidazizxon , U2510103
+
 #include "order.h"
 #include <iostream>
 #include <fstream>
@@ -5,14 +7,14 @@
 #include <ctime>
 using namespace std;
 
-// get todays date as a string
+// Get todays date
 string getCurrentDate() {
     time_t now = time(0);
     tm* t = localtime(&now);
     return to_string(t->tm_mday) + "/" + to_string(1 + t->tm_mon) + "/" + to_string(1900 + t->tm_year);
 }
 
-// count how many orders are in orders.txt to get next id
+// Count orders in file to get next ID
 int getNextOrderId() {
     ifstream file("orders.txt");
     string line;
@@ -22,73 +24,77 @@ int getNextOrderId() {
     return count + 1;
 }
 
-// reduce stock in products.txt after a purchase
+// Reduce stock after purchase
 void updateStock(vector<CartItem>& cart) {
     vector<Product> products = loadProducts();
-    
-    // subtract bought quantity from each product
+
     for (CartItem& item : cart)
         for (Product& p : products)
-            if (p.id == item.product.id)
-                p.quantity -= item.quantity;
+            if (p.getId() == item.getProduct().getId())
+                p.setQuantity(p.getQuantity() - item.getQuantity());
 
-    // rewrite products.txt with new quantities
+    // Rewrite products.txt with updated quantities
     ofstream file("products.txt");
     for (Product& p : products)
-        file << p.id << "," << p.name << "," << p.price << "," << p.quantity << "," << p.category << "\n";
+        file << p.getId() << "," << p.getName() << "," << p.getPrice()
+             << "," << p.getQuantity() << "," << p.getCategory() << "\n";
     file.close();
 }
 
-// process the order, print receipt, save to file
+// Checkout with exception handling (Lecture 11)
 void checkout(vector<CartItem>& cart, string username) {
     if (cart.empty()) { cout << "\nCart is empty!\n"; return; }
 
-    int orderId = getNextOrderId();
-    string date = getCurrentDate();
-    double total = getTotal(cart);
+    try {
+        int orderId = getNextOrderId();
+        string date = getCurrentDate();
+        double total = getTotal(cart);
 
-    // print receipt to screen
-    cout << "\n==========================================\n";
-    cout << "             ORDER RECEIPT\n";
-    cout << "==========================================\n";
-    cout << "  Order ID : #" << orderId << "\n";
-    cout << "  Customer : " << username << "\n";
-    cout << "  Date     : " << date << "\n";
-    cout << "------------------------------------------\n";
-    
-    for (CartItem& item : cart) {
-        cout << "  " << left << setw(20) << item.product.name
-             << " x" << item.quantity
-             << "  $" << fixed << setprecision(2) << (item.product.price * item.quantity) << "\n";
+        // Print receipt
+        cout << "\n==========================================\n";
+        cout << "             ORDER RECEIPT\n";
+        cout << "==========================================\n";
+        cout << "  Order ID : #" << orderId << "\n";
+        cout << "  Customer : " << username << "\n";
+        cout << "  Date     : " << date << "\n";
+        cout << "------------------------------------------\n";
+
+        for (CartItem& item : cart) {
+            cout << "  " << left << setw(20) << item.getProduct().getName()
+                 << " x" << item.getQuantity()
+                 << "  $" << fixed << setprecision(2)
+                 << (item.getProduct().getPrice() * item.getQuantity()) << "\n";
+        }
+
+        cout << "------------------------------------------\n";
+        cout << "  TOTAL    : $" << fixed << setprecision(2) << total << "\n";
+        cout << "------------------------------------------\n";
+        cout << "      Thank you for shopping!\n";
+        cout << "------------------------------------------\n";
+
+        // Save to orders.txt
+        ofstream file("orders.txt", ios::app);
+        if (!file) throw runtime_error("Cannot open orders.txt!");
+
+        file << "ORDER #" << orderId << " | " << username << " | " << date << "\n";
+        for (CartItem& item : cart)
+            file << "  - " << item.getProduct().getName()
+                 << " x" << item.getQuantity()
+                 << " = $" << fixed << setprecision(2)
+                 << (item.getProduct().getPrice() * item.getQuantity()) << "\n";
+        file << "  TOTAL: $" << fixed << setprecision(2) << total << "\n";
+        file << "------------------------------------------\n";
+        file.close();
+
+        updateStock(cart);
+        cart.clear();
+        cout << "\nOrder saved! Cart cleared.\n";
+
+    } catch (exception& e) {
+        // Exception handling (Lecture 11)
+        cout << "Checkout error: " << e.what() << "\n";
     }
-    
-    cout << "------------------------------------------\n";
-    cout << "  TOTAL    : $" << fixed << setprecision(2) << total << "\n";
-    cout << "------------------------------------------\n";
-    cout << "      Thank you for shopping!\n";
-    cout << "------------------------------------------\n";
-
-    // save order to orders.txt
-    ofstream file("orders.txt", ios::app);
-    file << "ORDER #" << orderId << " | " << username << " | " << date << "\n";
-    for (CartItem& item : cart)
-        file << "  - " << item.product.name << " x" << item.quantity
-             << " = $" << fixed << setprecision(2) << (item.product.price * item.quantity) << "\n";
-    file << "  TOTAL: $" << fixed << setprecision(2) << total << "\n";
-    file << "------------------------------------------\n";
-    file.close();
-
-    // update stock and clear cart
-    updateStock(cart);
-    cart.clear();
-    cout << "\nOrder saved! Cart cleared.\n";
 }
-
-
-
-
-
-
 
 
 

@@ -1,3 +1,6 @@
+// Ahmadjonov Farruhbek, U2510119   
+
+
 #include "admin.h"
 #include "product.h"
 #include <iostream>
@@ -5,42 +8,33 @@
 #include <iomanip>
 using namespace std;
 
-// admin  delete a product from the store
+// Delete a product by ID
 void deleteProduct() {
-    
-    // first show all products so admin can see the ids
     showAllProducts();
-    
     int id;
     cout << "\nEnter product ID to delete: ";
     cin >> id;
 
-    // load all products from file
     vector<Product> products = loadProducts();
     bool found = false;
-    
-    // open file to rewrite it without the deleted product
+
     ofstream file("products.txt");
-    
     for (Product& p : products) {
-        // product we want to delete
-        if (p.id == id) {
+        if (p.getId() == id) {
             found = true;
-            cout << p.name << " deleted!\n";
+            cout << p.getName() << " deleted!\n";
             continue;
         }
-        // write everything else back to file
-        file << p.id << "," << p.name << "," << p.price << "," << p.quantity << "," << p.category << "\n";
+        file << p.getId() << "," << p.getName() << "," << p.getPrice()
+             << "," << p.getQuantity() << "," << p.getCategory() << "\n";
     }
     file.close();
-    
     if (!found) cout << "Product not found!\n";
 }
 
-// admin change price or quantity of a product
+// Edit product price or quantity
 void editProduct() {
     showAllProducts();
-    
     int id;
     cout << "\nEnter product ID to edit: ";
     cin >> id;
@@ -49,68 +43,44 @@ void editProduct() {
     bool found = false;
 
     for (Product& p : products) {
-        if (p.id == id) {
+        if (p.getId() == id) {
             found = true;
-            
-            // show current values and ask what to change
-            cout << "1. Edit price (current: $" << fixed << setprecision(2) << p.price << ")\n";
-            cout << "2. Edit quantity (current: " << p.quantity << ")\n";
+            cout << "1. Edit price (current: $" << fixed << setprecision(2) << p.getPrice() << ")\n";
+            cout << "2. Edit quantity (current: " << p.getQuantity() << ")\n";
             cout << "Select: ";
-            
-            int choice;
-            cin >> choice;
-            
+            int choice; cin >> choice;
+
             if (choice == 1) {
-                cout << "New price: ";
-                cin >> p.price;
+                double newPrice; cout << "New price: "; cin >> newPrice;
+                p.setPrice(newPrice);
                 cout << "Price updated!\n";
             }
             else if (choice == 2) {
-                cout << "New quantity: ";
-                cin >> p.quantity;
+                int newQty; cout << "New quantity: "; cin >> newQty;
+                p.setQuantity(newQty);
                 cout << "Quantity updated!\n";
             }
-            else {
-                cout << "Invalid choice!\n";
-            }
+            else cout << "Invalid choice!\n";
             break;
         }
     }
 
-    if (!found) {
-        cout << "Product not found!\n";
-        return;
-    }
+    if (!found) { cout << "Product not found!\n"; return; }
 
-    // save updated products back to file
     ofstream file("products.txt");
     for (Product& p : products)
-        file << p.id << "," << p.name << "," << p.price << "," << p.quantity << "," << p.category << "\n";
+        file << p.getId() << "," << p.getName() << "," << p.getPrice()
+             << "," << p.getQuantity() << "," << p.getCategory() << "\n";
     file.close();
 }
 
-// show all orders from orders.txt
+// View all orders
 void viewOrders() {
     ifstream file("orders.txt");
     string line;
-    
-    cout << "\n--- ALL ORDERS ---\n";
-    
+    cout << "\n=== ALL ORDERS ===\n";
     bool hasOrders = false;
-    while (getline(file, line)) {
-        hasOrders = true;
-        cout << line << "\n";
-    }
+    while (getline(file, line)) { hasOrders = true; cout << line << "\n"; }
     if (!hasOrders) cout << "No orders yet!\n";
 }
-
-
-
-
-
-
-
-
-
-
 

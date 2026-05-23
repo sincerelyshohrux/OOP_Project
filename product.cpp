@@ -1,51 +1,58 @@
+// Maxamatjonov Shohruxbek, U2510135
 #include "product.h"
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
 using namespace std;
 
-// read all products from products.txt and return as vector
+// Operator << overloading - print product (Lecture 4)
+ostream& operator<<(ostream& os, Product& p) {
+    os << "  [" << p.id << "] " << p.name
+       << " | $" << fixed << setprecision(2) << p.price
+       << " | Stock: " << p.quantity;
+    return os;
+}
+
+// Read all products from products.txt
 vector<Product> loadProducts() {
     vector<Product> products;
     ifstream file("products.txt");
     string line;
-    
+
     while (getline(file, line)) {
         stringstream ss(line);
         string id, name, price, qty, cat;
-        
-        // each line format: id,name,price,quantity,category
         getline(ss, id, ',');
         getline(ss, name, ',');
         getline(ss, price, ',');
         getline(ss, qty, ',');
         getline(ss, cat, ',');
-        
-        products.push_back({stoi(id), name, stod(price), stoi(qty), cat});
+
+        // Exception handling when reading file (Lecture 11)
+        try {
+            products.push_back(Product(stoi(id), name, stod(price), stoi(qty), cat));
+        } catch (exception& e) {
+            cout << "Error reading product: " << e.what() << "\n";
+        }
     }
     return products;
 }
 
-// show only products from one category
+// Show products by category using operator<< (Lecture 4)
 void showByCategory(string category) {
     vector<Product> products = loadProducts();
-    
     cout << "\n--- " << category << " catalog ---\n";
-    
     bool found = false;
     for (Product p : products) {
-        if (p.category == category) {
+        if (p.getCategory() == category) {
             found = true;
-            cout << "  [" << p.id << "] " << p.name
-                 << " | $" << fixed << setprecision(2) << p.price
-                 << " | Stock: " << p.quantity << "\n";
+            cout << p << "\n";   // uses operator<< (Lecture 4)
         }
     }
     if (!found) cout << "  No products found!\n";
 }
 
-// show all products grouped by category
+// Show all products grouped by category
 void showAllProducts() {
     cout << "\n=== ALL PRODUCTS ===\n";
     showByCategory("phone");
@@ -53,7 +60,7 @@ void showAllProducts() {
     showByCategory("car");
 }
 
-// admin adds a new product
+// Admin adds a new product
 void addProduct() {
     string name, category;
     double price;
@@ -75,26 +82,20 @@ void addProduct() {
     else if (catChoice == 3) category = "car";
     else { cout << "Invalid category!\n"; return; }
 
-    // new id = total products + 1
     int newId = loadProducts().size() + 1;
-    
     ofstream file("products.txt", ios::app);
     file << newId << "," << name << "," << price << "," << quantity << "," << category << "\n";
     file.close();
-    
     cout << "Product added! (ID: " << newId << ")\n";
 }
 
-// find one product by its id
+// Find product by ID
 Product getProductById(int id) {
     for (Product p : loadProducts()) {
-        if (p.id == id) return p;
+        if (p.getId() == id) return p;
     }
-    return {-1, "", 0.0, 0, ""}; // return -1 id if not found
+    return Product(-1, "", 0, 0, "");
 }
-
-
-
 
 
 
