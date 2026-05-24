@@ -5,98 +5,147 @@
 #include <iomanip>
 using namespace std;
 
-// Operator overloading  print product 
+// operator overloading to print Product object
 ostream& operator<<(ostream& os, Product& p) {
-    os << "  [" << p.id << "] " << p.name
-       << " | $" << fixed << setprecision(2) << p.price
-       << " | Stock: " << p.quantity;
-    return os;
+
+    // uutput product details in formatted style
+    os << "  [" << p.id << "] "        // poduct ID
+       << p.name                      // product name
+       << " | $" 
+       << fixed << setprecision(2)    // price with 2 decimal places
+       << p.price
+       << " | Stock: " 
+       << p.quantity;                 // available quantity
+
+    return os;                         // return output stream
 }
 
-// Read all products from products.txt
+// Reads all products from "products.txt" file
 vector<Product> loadProducts() {
-    vector<Product> products;
-    ifstream file("products.txt");
-    string line;
 
+    vector<Product> products;         // stores all loaded products
+    ifstream file("products.txt");     // open file for reading
+    string line;                       // stores each line from file
+
+    // read file line by line
     while (getline(file, line)) {
-        stringstream ss(line);
-        string id, name, price, qty, cat;
+        stringstream ss(line);         // break line into parts
+        string id, name, price, quan, cate;
+
+        // split data using comma as delimiter
         getline(ss, id, ',');
         getline(ss, name, ',');
         getline(ss, price, ',');
-        getline(ss, qty, ',');
-        getline(ss, cat, ',');
+        getline(ss, quan, ',');
+        getline(ss, cate, ',');
 
-        // Exception handling when reading file
+        // convert string values to appropriate data types
         try {
-            products.push_back(Product(stoi(id), name, stod(price), stoi(qty), cat));
-        } catch (exception& e) {
+            products.push_back(
+                Product(
+                    stoi(id),          // convert ID to int
+                    name,
+                    stod(price),       // convert price to double
+                    stoi(quan),         // convert quantity to int
+                    cate
+                )
+            );
+        }
+        catch (exception& e) {
+            // handle invalid data in file
             cout << "Error reading product: " << e.what() << "\n";
         }
     }
-    return products;
+
+    return products;                  // return all loaded products
 }
 
-// Show products by category using operator
+// displays products belonging to a specific category
 void showByCategory(string category) {
-    vector<Product> products = loadProducts();
+
+    vector<Product> products = loadProducts();   // load all products
     cout << "\n--- " << category << " catalog ---\n";
-    bool found = false;
+
+    bool found = false;                           // track if any product is found
+
+    // loop through all products
     for (Product p : products) {
+
+        // check if product category matches
         if (p.getCategory() == category) {
             found = true;
-            cout << p << "\n";   // uses operator
+            cout << p << "\n";                    // uses operator<<
         }
     }
-    if (!found) cout << "  No products found!\n";
+
+    // if no products found in this category
+    if (!found)
+        cout << "  No products found!\n";
 }
 
-// Show all products grouped by category
+// show all products grouped by category
 void showAllProducts() {
     cout << "\n=== ALL PRODUCTS ===\n";
-    showByCategory("phone");
+    showByCategory("phone");        // display phone
     showByCategory("notebook");
     showByCategory("car");
 }
 
-// Admin adds a new product
+// allows admin to add a new product
 void addProduct() {
+
     string name, category;
     double price;
-    int quantity, catChoice;
+    int quantity, cateChoice;
 
     cout << "\n=== ADD PRODUCT ===\n";
+
     cout << "Name: ";
-    cin.ignore();
-    getline(cin, name);
+    cin.ignore();                  // clear input buffer
+    getline(cin, name);            // read product name
+
     cout << "Price: ";
     cin >> price;
+
     cout << "Quantity: ";
     cin >> quantity;
+
     cout << "Category (1-Phone, 2-Notebook, 3-Car): ";
-    cin >> catChoice;
+    cin >> cateChoice;
 
-    if      (catChoice == 1) category = "phone";
-    else if (catChoice == 2) category = "notebook";
-    else if (catChoice == 3) category = "car";
-    else { cout << "Invalid category!\n"; return; }
+    // determine category based on user choice
+    if      (cateChoice == 1) category = "phone";
+    else if (cateChoice == 2) category = "notebook";
+    else if (cateChoice == 3) category = "car";
+    else {
+        cout << "Invalid category!\n";
+        return;
+    }
 
+    // generate new product ID
     int newId = loadProducts().size() + 1;
+
+    // open file in append mode and save product
     ofstream file("products.txt", ios::app);
-    file << newId << "," << name << "," << price << "," << quantity << "," << category << "\n";
+    file << newId << "," << name << "," << price << ","
+         << quantity << "," << category << "\n";
     file.close();
+
     cout << "Product added! (ID: " << newId << ")\n";
 }
-
-// Find product by ID
+// finds and returns a product by its ID
 Product getProductById(int id) {
+
+    // loop through all products
     for (Product p : loadProducts()) {
-        if (p.getId() == id) return p;
+
+        if (p.getId() == id)
+            return p;              // return product if found
     }
+
+    // return invalid product if not found
     return Product(-1, "", 0, 0, "");
 }
-
 
 
 

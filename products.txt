@@ -5,3 +5,5 @@
 5,Macbook M5 Pro,2200,1,notebook
 6,Airpods 4,50,42,phone
 7,Asus ROG Strix,2500,3,notebook
+8,Malibu,39000,11,car
+9,Onix,14500,4,car
